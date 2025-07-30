@@ -10,6 +10,7 @@ from bs4 import BeautifulSoup, element
 from tqdm import tqdm
 
 # --- Configuration ---
+VERSION: str = "1.0.0"
 MAX_FILE_SIZE_BYTES: int = 2 * 1024 * 1024  # 2 MB
 MIN_CONTENT_SCORE: int = 50  # Minimum score to be considered 'good' content
 ALLOWED_TAGS: List[str] = [
@@ -19,7 +20,7 @@ ALLOWED_TAGS: List[str] = [
 ]
 
 def setup_logging(output_dir: str, input_folder_name: str) -> None:
-    """Sets up a logger to write to a file in the output directory."""
+    """Set up a logger to write to a file in the output directory."""
     log_filename = f"run_{input_folder_name}.log"
     log_filepath = os.path.join(output_dir, log_filename)
     
@@ -40,7 +41,7 @@ def setup_logging(output_dir: str, input_folder_name: str) -> None:
         logger.addHandler(console_handler)
 
 def check_pandoc_dependency() -> None:
-    """Checks if Pandoc is installed and exits if it's not."""
+    """Check if Pandoc is installed and exit if it's not."""
     if shutil.which("pandoc") is None:
         # Use logging if available, otherwise print
         try:
@@ -53,7 +54,7 @@ def check_pandoc_dependency() -> None:
     logging.info("Pandoc dependency check successful.")
 
 def get_content_score(tag: element.Tag) -> int:
-    """Calculates a 'content score' for a given HTML element."""
+    """Calculate a 'content score' for a given HTML element."""
     if not tag:
         return 0
     
@@ -81,10 +82,7 @@ def get_content_score(tag: element.Tag) -> int:
     return score
 
 def clean_html_for_llm(soup_tag: element.Tag) -> str:
-    """
-    Surgically cleans HTML by removing unwanted tags while preserving their content
-    and the overall document structure.
-    """
+    """Surgically clean HTML by removing unwanted tags while preserving content structure."""
     if not soup_tag:
         return ""
     
@@ -97,7 +95,7 @@ def clean_html_for_llm(soup_tag: element.Tag) -> str:
     return str(clean_tag)
 
 def convert_html_to_output(html_string: str, output_format: str) -> Optional[str]:
-    """Uses pandoc to convert an HTML string to the desired output format."""
+    """Use pandoc to convert an HTML string to the desired output format."""
     if not html_string:
         return None
     
@@ -129,7 +127,7 @@ def convert_html_to_output(html_string: str, output_format: str) -> Optional[str
         return None
 
 def process_html_files(input_dir: str, output_dir: str, output_format: str) -> None:
-    """Main function to orchestrate the conversion process."""
+    """Orchestrate the HTML conversion process."""
     if not os.path.isdir(input_dir):
         print(f"Error: Input directory '{input_dir}' not found.", file=sys.stderr)
         sys.exit(1)
@@ -252,6 +250,11 @@ def main():
         help="The output file format:\n"
              "  md  - Markdown (default)\n"
              "  txt - Plain text"
+    )
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=f"HTML to Markdown/Text Converter {VERSION}"
     )
     
     args = parser.parse_args()
