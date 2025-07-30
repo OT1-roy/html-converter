@@ -1,34 +1,85 @@
-# Private repo .gitignore - less restrictive for development files
-
-# Python bytecode (still ignore these)
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
-
-# Build artifacts
+.Python
 build/
+develop-eggs/
 dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
 *.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
 
-# Virtual environments  
-venv/
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Environments
+.env
+.venv
 env/
+venv/
 ENV/
+env.bak/
+venv.bak/
 
-# IDE temporary files
+# IDE
+.vscode/
+.idea/
 *.swp
 *.swo
 *~
 
-# OS files
+# OS
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
 
-# Large output directories (but allow small test outputs)
+# Project specific - directories for input/output data
+# These folders may contain copyrighted material
+HTML_Source/
+Markdown_Output/
+Text_Output/
+data/
+input/
 output/
-*_output_*/
+test_output/
 
-# Log files from runs
+# Log files
 *.log
 logs/
