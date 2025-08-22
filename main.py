@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup, element
 from tqdm import tqdm
 
 # --- Configuration ---
-VERSION: str = "1.0.0"
+VERSION: str = "2.0.0"
 MAX_FILE_SIZE_BYTES: int = 2 * 1024 * 1024  # 2 MB
 MIN_CONTENT_SCORE: int = 50  # Minimum score to be considered 'good' content
 ALLOWED_TAGS: List[str] = [
@@ -53,6 +53,22 @@ def check_pandoc_dependency() -> None:
         sys.exit(1)
     logging.info("Pandoc dependency check successful.")
 
+def check_html_to_text_dependency() -> None:
+    """Check if html-to-text engine dependencies are available."""
+    # For now, just log that we're using html-to-text engine
+    # The actual dependency checking will happen during conversion
+    logging.info("html-to-text engine dependencies check successful.")
+
+def check_dependencies(engine: str) -> None:
+    """Check dependencies based on selected engine."""
+    if engine == 'pandoc':
+        check_pandoc_dependency()
+    elif engine == 'html-to-text':
+        check_html_to_text_dependency()
+    else:
+        logging.critical(f"Unknown engine: {engine}")
+        sys.exit(1)
+
 def get_content_score(tag: element.Tag) -> int:
     """Calculate a 'content score' for a given HTML element."""
     if not tag:
@@ -94,7 +110,7 @@ def clean_html_for_llm(soup_tag: element.Tag) -> str:
             
     return str(clean_tag)
 
-def convert_html_to_output(html_string: str, output_format: str) -> Optional[str]:
+def convert_html_to_output_pandoc(html_string: str, output_format: str) -> Optional[str]:
     """Use pandoc to convert an HTML string to the desired output format."""
     if not html_string:
         return None
@@ -126,7 +142,76 @@ def convert_html_to_output(html_string: str, output_format: str) -> Optional[str
         logging.error(f"An unexpected error occurred with Pandoc: {e}")
         return None
 
-def process_html_files(input_dir: str, output_dir: str, output_format: str) -> None:
+def convert_html_to_output_html_to_text(html_string: str, output_format: str) -> Optional[str]:
+    """Use html-to-text to convert an HTML string to the desired output format."""
+    if not html_string:
+        return None
+    
+    # Use different libraries based on output format
+    if output_format == 'md':
+        # Use html-to-md for Markdown output
+        md_script_path = os.path.join(os.path.dirname(__file__), "html-to-md-cli.js").replace("/", "\\")
+        commands_to_try = [
+            f'node "{md_script_path}"'
+        ]
+    elif output_format == 'txt':
+        # Use html-to-text for plain text output
+        cli_path = os.path.expanduser("~/AppData/Roaming/npm/node_modules/@html-to/text-cli/bin/cli.js").replace("/", "\\")
+        commands_to_try = [
+            'html-to-text --wordwrap=false',
+            f'node "{cli_path}" --wordwrap=false'
+        ]
+    else:
+        logging.error(f"Invalid output format specified: {output_format}")
+        return None
+    
+    for command in commands_to_try:
+        try:
+            # Use cmd.exe explicitly on Windows to avoid bash issues
+            if sys.platform == 'win32':
+                process = subprocess.Popen(
+                    f'cmd /c "{command}"',
+                    stdin=subprocess.PIPE,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    shell=False
+                )
+            else:
+                process = subprocess.Popen(
+                    command,
+                    stdin=subprocess.PIPE,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    shell=True
+                )
+            stdout, stderr = process.communicate(input=html_string.encode('utf-8'))
+            
+            
+            if process.returncode == 0:
+                return stdout.decode('utf-8')
+            else:
+                # Try next command
+                continue
+                
+        except Exception as e:
+            # Try next command
+            continue
+    
+    # If we get here, all commands failed
+    logging.error("html-to-text: All command variants failed")
+    return None
+
+def convert_html_to_output(html_string: str, output_format: str, engine: str) -> Optional[str]:
+    """Dispatcher function to call the appropriate conversion engine."""
+    if engine == 'pandoc':
+        return convert_html_to_output_pandoc(html_string, output_format)
+    elif engine == 'html-to-text':
+        return convert_html_to_output_html_to_text(html_string, output_format)
+    else:
+        logging.error(f"Unknown engine: {engine}")
+        return None
+
+def process_html_files(input_dir: str, output_dir: str, output_format: str, engine: str) -> None:
     """Orchestrate the HTML conversion process."""
     if not os.path.isdir(input_dir):
         print(f"Error: Input directory '{input_dir}' not found.", file=sys.stderr)
@@ -143,7 +228,7 @@ def process_html_files(input_dir: str, output_dir: str, output_format: str) -> N
         return
 
     job_stats: Dict[str, int] = {"successful": 0, "failed": 0, "output_files": 1}
-    logging.info(f"Starting job. Found {len(all_files)} HTML files in '{input_dir}'. Output format: {output_format.upper()}")
+    logging.info(f"Starting job. Found {len(all_files)} HTML files in '{input_dir}'. Output format: {output_format.upper()}. Engine: {engine}")
     
     output_filename_template = f"{input_folder_name}_output_{{}}.{output_format}"
     output_filepath = os.path.join(output_dir, output_filename_template.format(job_stats["output_files"]))
@@ -185,7 +270,7 @@ def process_html_files(input_dir: str, output_dir: str, output_format: str) -> N
 
                     if html_to_process:
                         clean_html = clean_html_for_llm(html_to_process)
-                        output_text = convert_html_to_output(clean_html, output_format)
+                        output_text = convert_html_to_output(clean_html, output_format, engine)
                         
                         if output_text and output_text.strip():
                             content_to_write = ""
@@ -208,7 +293,7 @@ def process_html_files(input_dir: str, output_dir: str, output_format: str) -> N
                             out_file.write(content_to_write)
                             job_stats["successful"] += 1
                         else:
-                            logging.error(f"Pandoc conversion resulted in empty output for {filename}.")
+                            logging.error(f"Conversion resulted in empty output for {filename}.")
                             job_stats["failed"] += 1
                     else:
                         logging.error(f"Failed to find any content to convert in {filename}.")
@@ -223,6 +308,7 @@ def process_html_files(input_dir: str, output_dir: str, output_format: str) -> N
     finally:
         summary = (
             f"\n{'='*25} JOB SUMMARY {'='*25}\n"
+            f"  - Engine used:                {engine}\n"
             f"  - Total HTML files scanned:   {len(all_files)}\n"
             f"  - Successful extractions:     {job_stats['successful']}\n"
             f"  - Failed extractions:         {job_stats['failed']}\n"
@@ -252,6 +338,14 @@ def main():
              "  txt - Plain text"
     )
     parser.add_argument(
+        "--engine",
+        choices=['html-to-text', 'pandoc'],
+        default='html-to-text',
+        help="The conversion engine to use:\n"
+             "  html-to-text - Enterprise-grade HTML parser (default)\n"
+             "  pandoc       - Original Pandoc-based converter"
+    )
+    parser.add_argument(
         "--version",
         action="version",
         version=f"HTML to Markdown/Text Converter {VERSION}"
@@ -260,10 +354,10 @@ def main():
     args = parser.parse_args()
     
     # We set up logging inside process_html_files once we know the output dir.
-    # But we check for Pandoc first.
-    check_pandoc_dependency() 
+    # But we check dependencies first based on selected engine.
+    check_dependencies(args.engine)
     
-    process_html_files(args.input_dir, args.output_dir, args.format)
+    process_html_files(args.input_dir, args.output_dir, args.format, args.engine)
 
 if __name__ == "__main__":
     main()

@@ -6,21 +6,41 @@ A robust, production-ready utility to batch-convert HTML files into clean, reada
 
 - **Intelligent Content Extraction:** Uses a scoring heuristic to analyze HTML files and isolate primary article content, automatically discarding boilerplate like headers, footers, and navigation
 - **Surgical Cleaning for LLM Data:** Reconstructs core content using a whitelist of semantically valuable tags (`<p>`, `<h1>`, `<ul>`, etc.), removing structural noise while preserving meaning  
+- **Dual Conversion Engines:**
+  - **html-to-text Engine:** Enterprise-grade HTML parser with advanced parsing capabilities (default)
+  - **Pandoc Engine:** Battle-tested, reliable conversion with proven output quality
 - **Dual Output Formats:**
   - **Markdown (`.md`):** Preserves document structure (headings, lists, links)
   - **Plain Text (`.txt`):** Generates pure, unformatted text for foundational language modeling
 - **Robust Error Handling:** Intelligent fallback to `<body>` conversion when no high-quality content blocks are found, with comprehensive per-file exception handling
-- **High-Quality Conversion:** Uses **Pandoc** for clean, well-formatted output  
+- **Engine Selection:** Choose between proven reliability (Pandoc) or advanced parsing (html-to-text) based on your needs
 - **Automatic File Splitting:** Splits output into manageable files (default 2MB limit)
 - **Progress Tracking:** Real-time progress bar with `tqdm`
-- **Comprehensive Logging:** Detailed log files for debugging and review
-- **Dependency Verification:** Checks for Pandoc installation before processing
+- **Comprehensive Logging:** Detailed log files for debugging and review with engine selection tracking
+- **Smart Dependency Management:** Automatic dependency checking based on selected conversion engine
 
 ## Prerequisites
 
+### Required
 - **Python 3.7+**: Download from [python.org](https://www.python.org/downloads/)
-- **Pandoc**: Required external dependency. Install from [pandoc.org/installing.html](https://pandoc.org/installing.html)
+
+### Conversion Engines (Choose One or Both)
+
+#### html-to-text Engine (Default)
+- **Node.js**: Required for html-to-text packages. Download from [nodejs.org](https://nodejs.org/)
+- **Install both packages**:
+  ```bash
+  npm install -g @html-to/text-cli    # For plain text output
+  npm install -g html-to-md           # For Markdown output
+  ```
+  - Verify installation: `html-to-text --version`
+  - **Recommended for**: Advanced HTML parsing, complex document structures
+  - **Note**: Uses different libraries optimized for each output format
+
+#### Pandoc Engine (Alternative)
+- **Pandoc**: Battle-tested document converter. Install from [pandoc.org/installing.html](https://pandoc.org/installing.html)
   - Verify installation: `pandoc --version`
+  - **Recommended for**: Reliable, proven conversion quality
 
 ## Installation
 
@@ -41,49 +61,74 @@ A robust, production-ready utility to batch-convert HTML files into clean, reada
 ### Basic Command Structure
 
 ```bash
-python main.py INPUT_DIRECTORY OUTPUT_DIRECTORY [--format FORMAT]
+python main.py INPUT_DIRECTORY OUTPUT_DIRECTORY [--format FORMAT] [--engine ENGINE]
 ```
 
 **Arguments:**
 - `INPUT_DIRECTORY`: Path to folder containing HTML files
 - `OUTPUT_DIRECTORY`: Path where converted files will be saved  
 - `--format`: Output format (`md` for Markdown, `txt` for plain text). Default: `md`
+- `--engine`: Conversion engine (`html-to-text` or `pandoc`). Default: `html-to-text`
 
 ### Examples
 
-**Convert to Markdown (default):**
+#### Basic Usage (Default: html-to-text Engine + Markdown)
 ```bash
 python main.py ./html_files ./output
 ```
 
-**Convert to plain text:**
+#### Engine Selection
 ```bash
-python main.py ./html_files ./output --format txt
+# Use html-to-text engine (enterprise parsing, default)
+python main.py ./html_files ./output --engine html-to-text
+
+# Use Pandoc engine (reliable, battle-tested)
+python main.py ./html_files ./output --engine pandoc
 ```
 
-**Cross-platform paths:**
+#### Output Format Selection
+```bash
+# Convert to plain text with html-to-text
+python main.py ./html_files ./output --format txt --engine html-to-text
+
+# Convert to Markdown with Pandoc
+python main.py ./html_files ./output --format md --engine pandoc
+```
+
+#### Cross-platform Paths
 ```bash
 # Windows
-python main.py C:\Data\HTML C:\Data\Output
+python main.py C:\Data\HTML C:\Data\Output --engine html-to-text
 
 # macOS/Linux  
-python main.py /home/user/html_files /home/user/output
+python main.py /home/user/html_files /home/user/output --engine pandoc
 ```
+
+### Engine Selection Guide
+
+| Use Case | Recommended Engine | Why |
+|----------|-------------------|-----|
+| **General ML datasets** | `html-to-text` | Advanced parsing, format-optimized libraries (default) |
+| **Complex HTML documents** | `html-to-text` | Enterprise-grade parsing, superior structure handling |
+| **Large-scale processing** | `pandoc` | Lower resource usage, faster processing |
+| **Scientific/Technical content** | `html-to-text` | Superior table and list processing with proper formatting |
+| **Legacy/Simple setups** | `pandoc` | Single dependency, proven reliability |
 
 ### Output
 
 The script creates:
 - Converted files in the specified output directory
-- A detailed log file (e.g., `run_html_files.log`)
-- A summary report showing processing statistics
+- A detailed log file (e.g., `run_html_files.log`) with engine selection details
+- A summary report showing processing statistics including which engine was used
 
 ## How It Works
 
-1. **Content Detection**: Analyzes HTML structure to identify main content areas using a scoring algorithm
-2. **Content Extraction**: Extracts the highest-scoring content block (article, main, div, or section)
-3. **HTML Cleaning**: Removes unwanted tags while preserving semantic structure
-4. **Format Conversion**: Uses Pandoc to convert cleaned HTML to Markdown or plain text
-5. **File Management**: Automatically splits large outputs and manages file naming
+1. **Engine Selection**: Chooses conversion engine based on user preference and dependency availability
+2. **Content Detection**: Analyzes HTML structure to identify main content areas using a scoring algorithm
+3. **Content Extraction**: Extracts the highest-scoring content block (article, main, div, or section)
+4. **HTML Cleaning**: Removes unwanted tags while preserving semantic structure
+5. **Format Conversion**: Uses selected engine (Pandoc or html-to-text) to convert cleaned HTML to desired format
+6. **File Management**: Automatically splits large outputs and manages file naming
 
 ## Configuration
 

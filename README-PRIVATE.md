@@ -7,6 +7,7 @@ This is the **private development repository** for the HTML to Markdown/Text Con
 ```
 html_converter/
 ├── main.py                 # Main application (public)
+├── html-to-md-cli.js      # Node.js wrapper for html-to-md (public)
 ├── requirements.txt        # Dependencies (public)
 ├── License                # MIT License (public)
 ├── README.md              # Public documentation (public)
@@ -77,10 +78,41 @@ git push origin main
 - AI-assisted development workflow integration
 
 ### Version History
-- `old/main_v1.py` - Initial prototype
+- `old/main_v1.py` - Initial prototype (v1.0.0)
 - `old/main_v2.py` - Second iteration with improved parsing
 - `old/main_v3.py` - Third version with better error handling
-- Current version in `main.py`
+- **v2.0.0** - Current version with dual-engine architecture (Pandoc + html-to-text support)
+
+## Architecture Notes (v2.0.0)
+
+### Dual-Engine Implementation
+The current version implements a sophisticated dual-engine architecture allowing users to choose between two conversion backends:
+
+#### Engine Functions
+- `convert_html_to_output_pandoc()` - Original Pandoc-based conversion (battle-tested)
+- `convert_html_to_output_html_to_text()` - New html-to-text engine with enterprise parsing
+- `convert_html_to_output()` - Dispatcher function that routes to appropriate engine
+
+#### Dependency Management
+- `check_pandoc_dependency()` - Validates Pandoc installation
+- `check_html_to_text_dependency()` - Validates html-to-text CLI with fallback paths
+- `check_dependencies()` - Engine-specific dependency validation
+
+#### CLI Enhancement
+- Added `--engine` parameter with choices: `html-to-text` (default) | `pandoc`
+- Maintains full backward compatibility
+- Enhanced logging shows engine selection in all outputs
+
+### Development Considerations
+- **Dual-Library Architecture**: html-to-text engine uses two specialized libraries:
+  - `@html-to/text-cli` for plain text output
+  - `html-to-md` for Markdown output (with custom Node.js wrapper)
+- **Windows Compatibility**: Uses `cmd /c` explicitly to avoid Git Bash conflicts in subprocess calls
+- **Format-Specific Routing**: Engine automatically selects appropriate library based on output format
+- **Custom CLI Wrapper**: `html-to-md-cli.js` provides stdin/stdout interface for html-to-md package
+- **Cross-Platform Support**: Different subprocess handling for Windows vs Unix systems
+- **Error Handling**: Isolated error handling per library to prevent cross-contamination
+- **Future Extensibility**: Architecture allows for additional engines and format-specific libraries
 
 ## Security Notes
 

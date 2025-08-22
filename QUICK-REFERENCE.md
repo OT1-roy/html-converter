@@ -21,9 +21,10 @@ QUICK-REFERENCE.md
 
 ### 🌍 Public Repo (origin)
 **ONLY include:**
-- `main.py`
+- `main.py` (now with dual-engine support v2.0.0)
+- `html-to-md-cli.js` (Node.js wrapper for Markdown conversion)
 - `requirements.txt` 
-- `README.md`
+- `README.md` (updated with dual-library installation)
 - `License`
 - `.gitignore` (public version)
 
