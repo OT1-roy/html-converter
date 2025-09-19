@@ -1,0 +1,139 @@
+EXTRACTION REPORT
+==================================================
+
+Timestamp: 2025-09-19 09:39:55
+
+SUMMARY
+------------------------------
+Total sections extracted: 62
+Total lines extracted: 16,356
+
+SECTION DETAILS
+------------------------------
+Section  1: Lines  85483- 85906 ( 424 lines)
+Section  2: Lines  83901- 85065 (1165 lines)
+Section  3: Lines  82940- 83314 ( 375 lines)
+Section  4: Lines  62403- 62696 ( 294 lines)
+Section  5: Lines  61264- 62102 ( 839 lines)
+Section  6: Lines  60285- 60760 ( 476 lines)
+Section  7: Lines  59007- 59176 ( 170 lines)
+Section  8: Lines  58341- 59006 ( 666 lines)
+Section  9: Lines  56662- 56904 ( 243 lines)
+Section 10: Lines  35083- 35812 ( 730 lines)
+Section 11: Lines  34054- 34454 ( 401 lines)
+Section 12: Lines  21324- 21617 ( 294 lines)
+Section 13: Lines  14793- 14994 ( 202 lines)
+Section 14: Lines   9703- 10531 ( 829 lines)
+Section 15: Lines   8607-  9253 ( 647 lines)
+Section 16: Lines   8465-  8606 ( 142 lines)
+Section 17: Lines   7915-  8464 ( 550 lines)
+Section 18: Lines   7669-  7914 ( 246 lines)
+Section 19: Lines   7435-  7668 ( 234 lines)
+Section 20: Lines   7211-  7434 ( 224 lines)
+Section 21: Lines   6991-  7210 ( 220 lines)
+Section 22: Lines   6857-  6990 ( 134 lines)
+Section 23: Lines   6637-  6856 ( 220 lines)
+Section 24: Lines   6392-  6636 ( 245 lines)
+Section 25: Lines   6208-  6391 ( 184 lines)
+Section 26: Lines   6084-  6207 ( 124 lines)
+Section 27: Lines   5791-  6083 ( 293 lines)
+Section 28: Lines   5491-  5790 ( 300 lines)
+Section 29: Lines   5329-  5490 ( 162 lines)
+Section 30: Lines   5101-  5328 ( 228 lines)
+Section 31: Lines   4925-  5100 ( 176 lines)
+Section 32: Lines   4742-  4924 ( 183 lines)
+Section 33: Lines   4666-  4741 (  76 lines)
+Section 34: Lines   4450-  4665 ( 216 lines)
+Section 35: Lines   4368-  4449 (  82 lines)
+Section 36: Lines   4092-  4367 ( 276 lines)
+Section 37: Lines   4012-  4091 (  80 lines)
+Section 38: Lines   3748-  4011 ( 264 lines)
+Section 39: Lines   3676-  3747 (  72 lines)
+Section 40: Lines   3498-  3675 ( 178 lines)
+Section 41: Lines   3426-  3497 (  72 lines)
+Section 42: Lines   3300-  3425 ( 126 lines)
+Section 43: Lines   3026-  3299 ( 274 lines)
+Section 44: Lines   2748-  3025 ( 278 lines)
+Section 45: Lines   2676-  2747 (  72 lines)
+Section 46: Lines   2458-  2675 ( 218 lines)
+Section 47: Lines   2150-  2457 ( 308 lines)
+Section 48: Lines   1894-  2149 ( 256 lines)
+Section 49: Lines   1832-  1893 (  62 lines)
+Section 50: Lines   1652-  1831 ( 180 lines)
+Section 51: Lines   1488-  1651 ( 164 lines)
+Section 52: Lines   1416-  1487 (  72 lines)
+Section 53: Lines   1284-  1415 ( 132 lines)
+Section 54: Lines   1210-  1283 (  74 lines)
+Section 55: Lines    996-  1209 ( 214 lines)
+Section 56: Lines    909-   995 (  87 lines)
+Section 57: Lines    839-   908 (  70 lines)
+Section 58: Lines    677-   838 ( 162 lines)
+Section 59: Lines    496-   676 ( 181 lines)
+Section 60: Lines    418-   495 (  78 lines)
+Section 61: Lines    218-   417 ( 200 lines)
+Section 62: Lines      6-   217 ( 212 lines)
+
+VALIDATION
+------------------------------
+Warning: Overlapping sections found:
+  - Section 1 and 2
+  - Section 2 and 3
+  - Section 3 and 4
+  - Section 4 and 5
+  - Section 5 and 6
+  - Section 6 and 7
+  - Section 7 and 8
+  - Section 8 and 9
+  - Section 9 and 10
+  - Section 10 and 11
+  - Section 11 and 12
+  - Section 12 and 13
+  - Section 13 and 14
+  - Section 14 and 15
+  - Section 15 and 16
+  - Section 16 and 17
+  - Section 17 and 18
+  - Section 18 and 19
+  - Section 19 and 20
+  - Section 20 and 21
+  - Section 21 and 22
+  - Section 22 and 23
+  - Section 23 and 24
+  - Section 24 and 25
+  - Section 25 and 26
+  - Section 26 and 27
+  - Section 27 and 28
+  - Section 28 and 29
+  - Section 29 and 30
+  - Section 30 and 31
+  - Section 31 and 32
+  - Section 32 and 33
+  - Section 33 and 34
+  - Section 34 and 35
+  - Section 35 and 36
+  - Section 36 and 37
+  - Section 37 and 38
+  - Section 38 and 39
+  - Section 39 and 40
+  - Section 40 and 41
+  - Section 41 and 42
+  - Section 42 and 43
+  - Section 43 and 44
+  - Section 44 and 45
+  - Section 45 and 46
+  - Section 46 and 47
+  - Section 47 and 48
+  - Section 48 and 49
+  - Section 49 and 50
+  - Section 50 and 51
+  - Section 51 and 52
+  - Section 52 and 53
+  - Section 53 and 54
+  - Section 54 and 55
+  - Section 55 and 56
+  - Section 56 and 57
+  - Section 57 and 58
+  - Section 58 and 59
+  - Section 59 and 60
+  - Section 60 and 61
+  - Section 61 and 62
