@@ -28,9 +28,14 @@ python main.py ./sample_html ./output
 # What happens:
 # 1. Scans all HTML files in ./sample_html
 # 2. Extracts main content using intelligent scoring
-# 3. Converts to Markdown using html-to-text engine
-# 4. Saves clean files to ./output directory
+# 3. Combines all HTML files into single output
+# 4. Converts to Markdown using html-to-text engine
+# 5. Saves as single clean file to ./output directory
 ```
+
+### Important Default Behavior
+
+**The converter automatically combines all input HTML files into a single output file.** This is the default behavior - no special flags needed!
 
 ### Essential Commands
 
@@ -192,18 +197,39 @@ if __name__ == "__main__":
 **Challenge**: Convert web content to e-book format.
 
 ```bash
-# Step 1: Convert HTML to Markdown
-python main.py ./book_chapters ./book_md --format md
+# Step 1: Convert HTML chapters to single Markdown file (automatic combining!)
+python main.py ./book_chapters ./book_output --format md
+# Result: All chapters combined into book_output_1.md
 
-# Step 2: Combine chapters
-cat book_md/*.md > book_combined.md
-
-# Step 3: Convert to EPUB (requires Pandoc)
-pandoc book_combined.md -o my_ebook.epub \
+# Step 2: Convert to EPUB (requires Pandoc)
+pandoc book_output/book_output_1.md -o my_ebook.epub \
   --metadata title="My Book" \
   --metadata author="Your Name" \
   --toc
 ```
+
+### Scenario 4: Podcast Transcription Processing
+
+**Challenge**: Convert 49 podcast transcription HTML files into single Markdown for analysis.
+
+```bash
+# Real-world example: Successfully converted 49 podcast HTML files
+python main.py C:\Users\royca\Sidekick\Audrey\Morehead_local\HTML_RAW\49Podcast_Transcription \
+               C:\Users\royca\Sidekick\Audrey\Morehead_local\Data \
+               --format md
+
+# Results:
+# - Input: 49 HTML transcription files
+# - Output: Single combined file (49Podcast_Transcription_output_1.md)
+# - Success rate: 100%
+# - All transcriptions merged automatically into one document
+```
+
+**Key Benefits**:
+- No manual combining needed
+- Preserves chronological order
+- Ready for further analysis or LLM training
+- Handles large combined output gracefully
 
 ## Real-World Use Cases
 

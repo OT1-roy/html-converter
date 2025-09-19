@@ -396,7 +396,7 @@ def process_html_files(
 ) -> None
 ```
 
-Main orchestration function that processes all HTML files in a directory.
+Main orchestration function that processes all HTML files in a directory and **automatically combines them into a single output file**.
 
 #### Parameters
 
@@ -418,23 +418,38 @@ Main orchestration function that processes all HTML files in a directory.
 
 #### Features
 
-- Automatic file splitting at 2MB
+- **Automatic file combining**: All input HTML files merged into single output
+- **Automatic file splitting**: If output exceeds 2MB, creates numbered parts
 - Progress bar with tqdm
 - Comprehensive logging
 - Job statistics reporting
+
+#### Default Behavior
+
+**Important**: By default, all HTML files from the input directory are combined into a single output file. This is the standard behavior - no special flags or options needed. If the combined output exceeds 2MB, it automatically splits into numbered parts (output_1.md, output_2.md, etc.)
 
 #### Example
 
 ```python
 from main import process_html_files
 
-# Basic usage
+# Basic usage - combines all HTML files into single output
 process_html_files(
     input_dir='./html_docs',
     output_dir='./markdown_docs',
     output_format='md',
     engine='html-to-text'
 )
+# Result: All HTML files combined into markdown_docs/html_docs_output_1.md
+
+# Real-world example: 49 podcast transcriptions
+process_html_files(
+    input_dir='./podcast_transcriptions',
+    output_dir='./output',
+    output_format='md',
+    engine='html-to-text'
+)
+# Result: 49 HTML files → single output/podcast_transcriptions_output_1.md
 
 # With error handling
 try:
